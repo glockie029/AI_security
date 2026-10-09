@@ -91,12 +91,39 @@ def chat():
             message = response.choices[0].message
 
             if message.tool_calls:
+
+                #TODO:
+                #保存模型发出的工具调用
+                messages.append(message.model_dump(exclude_none=True))
+
                 for call in message.tool_calls:
-                    print("工具名称",call.function.name)
-                    print("工具参数",call.function.arguments)
+                    #解析工具调用参数
+                    args = json.loads(call.function.arguments)
+                    #执行本地python函数
+                    if call.function.name == "get_vulnerability":
+                        result = get_vulnerability(args["cve_id"])
+                    else:
+                        result = {"error":"不支持的工具"}
+                    print("工具执行结果:",result)
+                #将执行结果返回对话历史
+                messages.append({"role":"tool","tool_call_id":call.id,"content":json.dumps(result,ensure_ascii=False)})
+                #工具结果提交给ds
+                final_response = client.chat.completions.create(
+                    model=MODEL,
+                    messages=messages
+                )
+                final_message = final_response.choices[0].message
+                print("\nAI:",final_message.content)
+                messages.append({
+                    "role":"assistant",
+                    "content": final_message.content
+                })
             else:
-                print("AI:",message.content)
-            print(f"\nAI: {answer}")
+                print(f"\nAI:",message.content)
+                messages.append({
+                    "role":"assistant",
+                    "content": message.content
+                })
 
             messages.append({
                 "role": "assistant",
