@@ -1,5 +1,6 @@
 import os
 import json
+import re
 
 import typer
 from dotenv import load_dotenv
