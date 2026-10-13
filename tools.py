@@ -1,4 +1,3 @@
-
 # tools.py
 CVE_DATABASE = {
     "CVE-2021-44228": {

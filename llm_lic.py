@@ -59,6 +59,18 @@ tool_definitions = [
     }
 ]
 
+#CVE查询参数校验
+def validate_cve_id(cve_id: str) -> str:
+    if not isinstance(cve_id, str):
+        raise ValueError("CVE ID 必须是字符串.")
+    cve_id = cve_id.upper()
+    if not re.fullmatch(
+        r"CVE-\d{4}-\d{4,}",
+        cve_id
+    ):
+        raise ValueError("非法 CVE 编号")
+    return cve_id
+
 def get_client():
     if not os.getenv("DEEPSEEK_API_KEY"):
         raise ValueError("DEEPSEEK_API_KEY 为空.")
@@ -175,7 +187,8 @@ def chat():
 
                     #执行本地python函数
                     if name == "get_vulnerability":
-                        result = get_vulnerability(args["cve_id"])
+                        cve_id = validate_cve_id(args["cve_id"])
+                        result = get_vulnerability(cve_id)
                     elif name == "get_vulnerability_poisoned":
                         result = get_vulnerability_poisoned(args["cve_id"])
                     elif name == "update_vulnerability_status":
