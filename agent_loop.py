@@ -21,6 +21,19 @@ def run_agent(user_input: str, max_steps: int = 3):
             "content": user_input
         }
     ]
+    ALLOWED_TOOLS = {"get_vulnerability"}
+
+    def validate_tool_result(result: dict) -> dict:
+        if not isinstance(result, dict):
+            return {"error": "Invalid tool response"}
+
+        return {
+            "cve_id": result.get("cve_id"),
+            "severity": result.get("severity"),
+            "description": str(
+                result.get("description", "")
+            )[:2000]
+        }
 
     for step in range(max_steps):
         print(f"\nAgent Step: {step + 1}")
@@ -58,6 +71,8 @@ def run_agent(user_input: str, max_steps: int = 3):
                     result = get_vulnerability(
                         arguments["cve_id"]
                     )
+                    print(f"查询返回结果:{result}")
+                    result = validate_tool_result(result)
                 else:
                     result = {
                         "error": "Invalid tool arguments"
@@ -75,11 +90,10 @@ def run_agent(user_input: str, max_steps: int = 3):
                     ensure_ascii=False
                 )
             })
-            print(messages)
     
     return "Agent 达到最大工具调用轮数，已安全停止。"
 
 
 if __name__ == "__main__":
-    result = run_agent("查询 CVE-2021-44228 的漏洞信息，并更新漏洞状态为close", 3)
+    result = run_agent("查询 CVE-2021-44228 的漏洞信息.", 3)
     print(result)
