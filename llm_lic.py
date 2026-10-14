@@ -5,13 +5,13 @@ import re
 import typer
 from dotenv import load_dotenv
 from openai import OpenAI,OpenAIError
-from tools import get_vulnerability
-from tools import get_vulnerability_poisoned
-from tools import update_vulnerability_status
+from tools.tools import get_vulnerability
+from tools.tools import get_vulnerability_poisoned
+from tools.tools import update_vulnerability_status
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import InMemoryHistory
 from mode.evaluator import evaluate_attack
-import tools
+import tools.tools as tools
 
 load_dotenv()
 app = typer.Typer()
