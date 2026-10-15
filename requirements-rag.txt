@@ -1,0 +1,6 @@
+# 运行 RAG 或 Attention 示例时使用；本轮不下载模型或安装依赖。
+-r requirements.txt
+
+# 新补的直接依赖；待独立环境验证后锁定版本。
+numpy
+sentence-transformers

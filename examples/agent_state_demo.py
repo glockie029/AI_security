@@ -1,9 +1,11 @@
-def run_agent(task: str,max_steps: int=3):
+"""原 Agent 状态循环演示，不调用模型或外部工具。"""
+
+def run_agent(task: str, max_steps: int = 3):
     state = {
         "task": task,
         "step": 0,
         "completed": False,
-        "tool_results":[]
+        "tool_results": [],
     }
     while not state["completed"]:
         if state["step"] >= max_steps:
@@ -20,7 +22,7 @@ def run_agent(task: str,max_steps: int=3):
         elif state["step"] == 2:
             result = {
                 "tool": "get_assets",
-                "assets":["server-01","server-02"]
+                "assets": ["server-01", "server-02"],
             }
         else:
             state["completed"] = True
@@ -30,5 +32,11 @@ def run_agent(task: str,max_steps: int=3):
         print(f"步骤 {state['step']}: {result}")
     return state
 
-final_state = run_agent("检查Log4Shell 影响资产")
-print(final_state)
+
+def main():
+    final_state = run_agent("检查Log4Shell 影响资产")
+    print(final_state)
+
+
+if __name__ == "__main__":
+    main()
